@@ -5,6 +5,10 @@ import threading
 import socket
 import time
 
+# frame width of camera update it
+camera_width = 720
+
+
 # Define a deque (a fast way to manage a fixed-size sliding window of values)
 direction_history = deque(maxlen=5)  # Store the last 5 directions
 lock = threading.Lock()  # Lock for thread synchronization
@@ -106,14 +110,18 @@ def detect_red_square(frame):
 
 
 # Movement direction based on red square position
-def movement(width, center_x):
+def movement(camera_width, center_x):
     if center_x is None:
         return 'n'
     direction = 'n'  # Default to neutral
-    if center_x > (340):   # width / 4 + 10 for now random values
+    if center_x > (camera_width/2):   # width / 4 + 10 for now random values
         direction = 'r'  # Move right 
-    elif (300) > center_x:
+    elif (camera_width/2) > center_x:
         direction = 'l'  # Move left
+    elif (camera_width/1.5)>center_x > (camera_width/2):
+        direction = 'rs'
+    elif (camera_width/1.5)<center_x < (camera_width/2):
+        direction = 'ls'
     else:
         direction = 'n'  # Stay neutral
     return direction
@@ -129,7 +137,7 @@ def data_sender(esp_address):
         time.sleep(0.1)  # Sleep briefly to avoid overloading CPU
 
 # Open a video capture object (0 for default camera)
-cap = cv2.VideoCapture('http://192.168.137.243:8080/video')
+cap = cv2.VideoCapture(0)
 
 # Start a separate thread for sending data every 10 frames
 esp_address = '192.168.137.29'  # Replace with your ESP8266 IP address
@@ -137,11 +145,10 @@ data_thread = threading.Thread(target=data_sender, args=(esp_address,), daemon=T
 data_thread.start()
 
 while True:
-    ret, frame = cap.read()
+    ret, frame = cap.read(0)
 
     if not ret:
         break
-
     frame, dimensions, center_x = detect_red_square(frame)
 
     height, width, channels = frame.shape 
