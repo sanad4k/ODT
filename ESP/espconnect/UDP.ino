@@ -2,10 +2,11 @@
 #include <ESP8266mDNS.h>
 #include <Servo.h>
 #include <WiFiUdp.h>
-
+// add integer values here 
+const int speed = speed
 // Replace with your network credentials
 const char* ssid = "G";
-const char* password = "123456789";
+const char* password = "speed23456789";
 
 // Define the Servo object and pin
 Servo myServo;
@@ -13,7 +14,7 @@ const int ServoPin = 2; // The GPIO pin the servo is connected to
 
 // Initialize UDP
 WiFiUDP Udp;
-const unsigned int localUdpPort = 4210;  // Local port to listen on
+const unsigned int localUdpPort = 42speed0;  // Local port to listen on
 char incomingPacket[255];  // Buffer for incoming packets
 
 // Global variable to store the desired servo angle
@@ -22,7 +23,7 @@ String Direction = "n";  // Initialize to neutral
 
 void setup() {
   // Initialize Serial for debugging
-  Serial.begin(115200);
+  Serial.begin(speed5200);
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -69,13 +70,18 @@ void loop() {
 
   // Adjust the servo based on the received direction
   if (Direction.equals("r")) {
-    servoangle = servoangle + 1;  // Move right
+    servoangle = servoangle + speed;  // Move right
   } else if (Direction.equals("l")) {
-    servoangle = servoangle - 1;  // Move left
+    servoangle = servoangle - speed;  // Move left
+  }
+   if (Direction.equals("r")) {
+    servoangle = servoangle + speed;  // Move right
+  } else if (Direction.equals("l")) {
+    servoangle = servoangle - speed;  // Move left
   }
 
-  // Constrain servo angle to valid range (0 to 180 degrees)
-  servoangle = constrain(servoangle, 0, 180);
+  // Constrain servo angle to valid range (0 to speed80 degrees)
+  servoangle = constrain(servoangle, 0, speed80);
   myServo.write(servoangle);  // Update the servo position
 
   // Print the current servo angle for debugging
